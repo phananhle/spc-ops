@@ -20,7 +20,6 @@ import type { ChatMessage } from './services/tutor'
 
 function App() {
   const [activeSensorKey, setActiveSensorKey] = useState<SensorKey>('diameter')
-  const [notes, setNotes] = useState('')
   const [draftMessage, setDraftMessage] = useState('')
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
@@ -93,7 +92,8 @@ function App() {
       </header>
 
       <section className="dashboard-grid" aria-label="SPC training workspace">
-        <div className="chart-panel panel">
+        <div className="analysis-column">
+          <div className="chart-panel panel">
           <div className="panel-header">
             <div>
               <p className="eyebrow">Control chart</p>
@@ -118,7 +118,7 @@ function App() {
           </div>
 
           <div className="chart-frame">
-            <ResponsiveContainer height={380} width="100%">
+            <ResponsiveContainer height="100%" width="100%">
               <LineChart data={activeSensor.points} margin={{ bottom: 12, left: 4, right: 18, top: 12 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -161,70 +161,65 @@ function App() {
               ? `Samples ${anomalyWindow.start}-${anomalyWindow.end} show the training signal.`
               : 'No abnormal region marked for this stream.'}
           </div>
+          </div>
+
+          <div className="below-chart-grid">
+            <section className="context-panel panel">
+              <div className="panel-header">
+                <div>
+                  <h2>Manufacturing logs</h2>
+                </div>
+              </div>
+              <div className="log-list">
+                {demoScenario.logs.map((log) => (
+                  <article className="log-card" key={`${log.time}-${log.source}`}>
+                    <div>
+                      <span>{log.time}</span>
+                      <strong>{log.source}</strong>
+                    </div>
+                    <p>{log.message}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="objectives-panel panel">
+              <p className="eyebrow">Problems to debug</p>
+              <h2>Objectives</h2>
+              <ol className="objective-list">
+                {demoScenario.objectives.map((objective) => (
+                  <li key={objective}>{objective}</li>
+                ))}
+              </ol>
+            </section>
+          </div>
         </div>
 
-        <aside className="context-panel panel">
-          <div className="panel-header">
+        <aside className="chat-panel panel">
+          <div className="tutor-hero">
             <div>
-              <p className="eyebrow">Qualitative context</p>
-              <h2>Manufacturing logs</h2>
+              <p className="eyebrow">Active coaching</p>
+              <h2>Socratic tutor</h2>
             </div>
+            <p>Test your reasoning against the chart and logs. The tutor will nudge instead of giving the answer away.</p>
           </div>
-          <div className="log-list">
-            {demoScenario.logs.map((log) => (
-              <article className="log-card" key={`${log.time}-${log.source}`}>
-                <div>
-                  <span>{log.time}</span>
-                  <strong>{log.source}</strong>
-                </div>
-                <p>{log.message}</p>
-              </article>
+          <div className="chat-history" aria-live="polite">
+            {chatMessages.map((message) => (
+              <div className={`chat-message ${message.role}`} key={message.id}>
+                <span>{message.role === 'tutor' ? 'Tutor' : 'You'}</span>
+                <p>{message.text}</p>
+              </div>
             ))}
           </div>
-        </aside>
-
-        <aside className="right-rail">
-          <section className="panel">
-            <p className="eyebrow">Problems to debug</p>
-            <h2>Objectives</h2>
-            <ol className="objective-list">
-              {demoScenario.objectives.map((objective) => (
-                <li key={objective}>{objective}</li>
-              ))}
-            </ol>
-          </section>
-
-          <section className="panel notes-panel">
-            <p className="eyebrow">Correct answer / notes</p>
-            <textarea
-              aria-label="Learner notes"
-              onChange={(event) => setNotes(event.target.value)}
-              placeholder="Write your current hypothesis before asking the tutor..."
-              value={notes}
+          <form className="chat-form" onSubmit={handleSendMessage}>
+            <input
+              aria-label="Message the tutor"
+              onChange={(event) => setDraftMessage(event.target.value)}
+              placeholder="Ask for a hint..."
+              value={draftMessage}
             />
-          </section>
-
-          <section className="panel chat-panel">
-            <p className="eyebrow">Active chat window</p>
-            <h2>Socratic tutor</h2>
-            <div className="chat-history" aria-live="polite">
-              {chatMessages.map((message) => (
-                <div className={`chat-message ${message.role}`} key={message.id}>
-                  <span>{message.role === 'tutor' ? 'Tutor' : 'You'}</span>
-                  <p>{message.text}</p>
-                </div>
-              ))}
-            </div>
-            <form className="chat-form" onSubmit={handleSendMessage}>
-              <input
-                aria-label="Message the tutor"
-                onChange={(event) => setDraftMessage(event.target.value)}
-                placeholder="Ask for a hint..."
-                value={draftMessage}
-              />
-              <button type="submit">Send</button>
-            </form>
-          </section>
+            <button type="submit">Send</button>
+          </form>
         </aside>
       </section>
     </main>
