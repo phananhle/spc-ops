@@ -1,7 +1,13 @@
-export type SensorKey = 'pressure' | 'temperature' | 'diameter' | 'wallThickness'
+export type SensorKey =
+  | 'pressure'
+  | 'temperature'
+  | 'diameter'
+  | 'wallThickness'
+  | 'coolantTemp'
 
 export type SensorPoint = {
   sample: number
+  time: string
   value: number
   mean: number
   ucl: number

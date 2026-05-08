@@ -1,4 +1,4 @@
-import type { Scenario, SensorKey } from '../data/types'
+import type { Scenario, SensorKey, SensorStream } from '../data/types'
 
 export type ChatMessage = {
   id: number
@@ -6,12 +6,28 @@ export type ChatMessage = {
   text: string
 }
 
-const responseBank = [
+const genericResponseBank = [
   'Good observation. Before naming a cause, which chart feature tells you this is more than normal random noise?',
-  'Look at the timing across sensors. Which stream starts drifting first, and which manufacturing log happened near that change?',
-  'Try comparing the diameter trend with cooling bath temperature. What physical link could make those move together?',
-  'You are close. How would you separate a material lot issue from a cooling process issue using the evidence shown here?',
+  'Look at the timing across sensors. Which stream starts moving first, and which manufacturing log happened near that change?',
+  'How would you separate a material issue from a process issue using only the evidence shown here?',
+  'Which sensor is the symptom, and which is closer to the source?',
 ]
+
+function findMentionedSensor(
+  message: string,
+  sensors: SensorStream[],
+): SensorStream | undefined {
+  const lower = message.toLowerCase()
+  return sensors.find((sensor) => {
+    if (lower.includes(sensor.key.toLowerCase())) {
+      return true
+    }
+    return sensor.label
+      .toLowerCase()
+      .split(/\s+/)
+      .some((word) => word.length > 3 && lower.includes(word))
+  })
+}
 
 export function getMockTutorResponse(
   message: string,
@@ -19,23 +35,27 @@ export function getMockTutorResponse(
   activeSensor: SensorKey,
   previousMessages: ChatMessage[],
 ) {
-  const normalizedMessage = message.toLowerCase()
+  const lower = message.toLowerCase()
 
-  if (normalizedMessage.includes('answer') || normalizedMessage.includes('summary')) {
-    return `A concise expert summary would mention ${scenario.groundTruth.anomalyType.toLowerCase()} and connect it to ${scenario.groundTruth.rootCause.toLowerCase()} What evidence would you cite first if you had to justify that conclusion?`
+  if (lower.includes('answer') || lower.includes('summary')) {
+    return `A concise expert summary would mention ${scenario.groundTruth.anomalyType.toLowerCase()} and connect it to ${scenario.groundTruth.rootCause.toLowerCase()} What evidence would you cite first?`
   }
 
-  if (normalizedMessage.includes('temperature') || normalizedMessage.includes('cool')) {
-    return 'That is a useful direction. If cooling temperature rises while diameter drifts upward, what does that suggest about shrinkage after the sizing sleeve?'
+  const mentioned = findMentionedSensor(message, scenario.sensors)
+  if (mentioned) {
+    if (mentioned.key === activeSensor) {
+      return `On the ${mentioned.label} chart, focus on the sequence before any limit is crossed. What does the pattern tell you — is this stream leading the others or lagging behind them?`
+    }
+    const activeLabel =
+      scenario.sensors.find((sensor) => sensor.key === activeSensor)?.label ??
+      'the current chart'
+    return `${mentioned.label} is worth a closer look. Switch to that tab and compare its timing against ${activeLabel}. Which one moves first?`
   }
 
-  if (normalizedMessage.includes('pressure')) {
-    return 'Pressure is drifting too, but ask whether it leads or follows the dimensional issue. What would you expect pressure to do if material flow resistance changed?'
-  }
-
-  if (normalizedMessage.includes('diameter') || activeSensor === 'diameter') {
-    return 'On the diameter chart, focus on the sequence before the limit is crossed. How many points keep moving upward, and why is that useful for early intervention?'
-  }
-
-  return responseBank[previousMessages.length % responseBank.length]
+  const teachingPrompts = scenario.groundTruth.teachingFocus.map(
+    (focus) =>
+      `Consider this lens: ${focus.toLowerCase().replace(/\.$/, '')}. What does that suggest you check next?`,
+  )
+  const pool = [...teachingPrompts, ...genericResponseBank]
+  return pool[previousMessages.length % pool.length]
 }

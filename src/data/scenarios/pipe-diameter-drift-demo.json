@@ -1,0 +1,941 @@
+{
+  "id": "pipe-diameter-drift-demo",
+  "title": "Pipe extrusion diameter drift",
+  "summary": "A pipe extrusion line has started producing parts near the upper diameter limit after a resin lot change and cooling adjustment.",
+  "line": "Extrusion Line 2",
+  "product": "HDPE irrigation pipe, 40 mm nominal diameter",
+  "objectives": [
+    "Identify which sensor stream first shows abnormal behavior.",
+    "Describe whether the pattern looks like common-cause variation, a shift, or a trend.",
+    "Connect the chart evidence to a plausible manufacturing root cause."
+  ],
+  "sensors": [
+    {
+      "key": "diameter",
+      "label": "Outer Diameter",
+      "unit": "mm",
+      "description": "Pipe outer diameter measured after the cooling bath.",
+      "points": [
+        {
+          "sample": 1,
+          "time": "08:00",
+          "value": 40.0086,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 2,
+          "time": "08:05",
+          "value": 40.0079,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 3,
+          "time": "08:10",
+          "value": 40.0178,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 4,
+          "time": "08:15",
+          "value": 40.0446,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 5,
+          "time": "08:20",
+          "value": 39.9728,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 6,
+          "time": "08:25",
+          "value": 39.9912,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 7,
+          "time": "08:30",
+          "value": 40.0254,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 8,
+          "time": "08:35",
+          "value": 40.0454,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 9,
+          "time": "08:40",
+          "value": 40.0139,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 10,
+          "time": "08:45",
+          "value": 40.0066,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 11,
+          "time": "08:50",
+          "value": 40.0174,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 12,
+          "time": "08:55",
+          "value": 39.9838,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 13,
+          "time": "09:00",
+          "value": 39.9948,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 14,
+          "time": "09:05",
+          "value": 40.0263,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 15,
+          "time": "09:10",
+          "value": 39.9992,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 16,
+          "time": "09:15",
+          "value": 39.9452,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": false
+        },
+        {
+          "sample": 17,
+          "time": "09:20",
+          "value": 39.9893,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 18,
+          "time": "09:25",
+          "value": 40.0548,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 19,
+          "time": "09:30",
+          "value": 40.101,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 20,
+          "time": "09:35",
+          "value": 40.1301,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 21,
+          "time": "09:40",
+          "value": 40.2069,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 22,
+          "time": "09:45",
+          "value": 40.2282,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 23,
+          "time": "09:50",
+          "value": 40.2475,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        },
+        {
+          "sample": 24,
+          "time": "09:55",
+          "value": 40.2795,
+          "mean": 40.0063,
+          "ucl": 40.0832,
+          "lcl": 39.9294,
+          "isAnomaly": true
+        }
+      ]
+    },
+    {
+      "key": "pressure",
+      "label": "Melt Pressure",
+      "unit": "bar",
+      "description": "Extruder melt pressure before the die head.",
+      "points": [
+        {
+          "sample": 1,
+          "time": "08:00",
+          "value": 118.9449,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 2,
+          "time": "08:05",
+          "value": 119.2803,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 3,
+          "time": "08:10",
+          "value": 119.7234,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 4,
+          "time": "08:15",
+          "value": 119.2104,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 5,
+          "time": "08:20",
+          "value": 117.5969,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 6,
+          "time": "08:25",
+          "value": 119.2571,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 7,
+          "time": "08:30",
+          "value": 119.0477,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 8,
+          "time": "08:35",
+          "value": 119.3737,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 9,
+          "time": "08:40",
+          "value": 119.845,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 10,
+          "time": "08:45",
+          "value": 119.9033,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 11,
+          "time": "08:50",
+          "value": 120.2167,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 12,
+          "time": "08:55",
+          "value": 119.064,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 13,
+          "time": "09:00",
+          "value": 119.6113,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 14,
+          "time": "09:05",
+          "value": 119.1099,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 15,
+          "time": "09:10",
+          "value": 119.2462,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 16,
+          "time": "09:15",
+          "value": 119.2832,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 17,
+          "time": "09:20",
+          "value": 118.8596,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": false
+        },
+        {
+          "sample": 18,
+          "time": "09:25",
+          "value": 119.7096,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 19,
+          "time": "09:30",
+          "value": 119.9297,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 20,
+          "time": "09:35",
+          "value": 120.7895,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 21,
+          "time": "09:40",
+          "value": 121.3819,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 22,
+          "time": "09:45",
+          "value": 122.1339,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 23,
+          "time": "09:50",
+          "value": 122.2822,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        },
+        {
+          "sample": 24,
+          "time": "09:55",
+          "value": 124.792,
+          "mean": 119.269,
+          "ucl": 120.9721,
+          "lcl": 117.566,
+          "isAnomaly": true
+        }
+      ]
+    },
+    {
+      "key": "temperature",
+      "label": "Cooling Bath Temp",
+      "unit": "C",
+      "description": "Average cooling bath temperature near the sizing sleeve.",
+      "points": [
+        {
+          "sample": 1,
+          "time": "08:00",
+          "value": 19.9414,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 2,
+          "time": "08:05",
+          "value": 20.3288,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 3,
+          "time": "08:10",
+          "value": 20.2644,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 4,
+          "time": "08:15",
+          "value": 20.1752,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 5,
+          "time": "08:20",
+          "value": 20.0562,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 6,
+          "time": "08:25",
+          "value": 20.1282,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 7,
+          "time": "08:30",
+          "value": 20.0758,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 8,
+          "time": "08:35",
+          "value": 20.0378,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 9,
+          "time": "08:40",
+          "value": 19.815,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 10,
+          "time": "08:45",
+          "value": 20.0885,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 11,
+          "time": "08:50",
+          "value": 20.0649,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 12,
+          "time": "08:55",
+          "value": 20.075,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 13,
+          "time": "09:00",
+          "value": 19.8332,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 14,
+          "time": "09:05",
+          "value": 20.1748,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 15,
+          "time": "09:10",
+          "value": 20.2576,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": false
+        },
+        {
+          "sample": 16,
+          "time": "09:15",
+          "value": 20.4336,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 17,
+          "time": "09:20",
+          "value": 20.4185,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 18,
+          "time": "09:25",
+          "value": 20.7442,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 19,
+          "time": "09:30",
+          "value": 20.9789,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 20,
+          "time": "09:35",
+          "value": 21.2464,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 21,
+          "time": "09:40",
+          "value": 21.2453,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 22,
+          "time": "09:45",
+          "value": 21.3415,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 23,
+          "time": "09:50",
+          "value": 21.5148,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        },
+        {
+          "sample": 24,
+          "time": "09:55",
+          "value": 21.6697,
+          "mean": 20.0878,
+          "ucl": 20.5269,
+          "lcl": 19.6487,
+          "isAnomaly": true
+        }
+      ]
+    },
+    {
+      "key": "wallThickness",
+      "label": "Wall Thickness",
+      "unit": "mm",
+      "description": "Ultrasonic wall thickness measurement after puller station.",
+      "points": [
+        {
+          "sample": 1,
+          "time": "08:00",
+          "value": 3.0201,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 2,
+          "time": "08:05",
+          "value": 3.0135,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 3,
+          "time": "08:10",
+          "value": 3.021,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 4,
+          "time": "08:15",
+          "value": 3.0128,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 5,
+          "time": "08:20",
+          "value": 2.9903,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 6,
+          "time": "08:25",
+          "value": 2.9882,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 7,
+          "time": "08:30",
+          "value": 2.9927,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 8,
+          "time": "08:35",
+          "value": 2.987,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 9,
+          "time": "08:40",
+          "value": 2.9763,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 10,
+          "time": "08:45",
+          "value": 3.0,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 11,
+          "time": "08:50",
+          "value": 3.0029,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 12,
+          "time": "08:55",
+          "value": 2.9927,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 13,
+          "time": "09:00",
+          "value": 2.9928,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 14,
+          "time": "09:05",
+          "value": 2.9896,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 15,
+          "time": "09:10",
+          "value": 2.9985,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 16,
+          "time": "09:15",
+          "value": 2.9871,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 17,
+          "time": "09:20",
+          "value": 2.999,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 18,
+          "time": "09:25",
+          "value": 3.012,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 19,
+          "time": "09:30",
+          "value": 2.9882,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 20,
+          "time": "09:35",
+          "value": 3.0004,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 21,
+          "time": "09:40",
+          "value": 2.9997,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 22,
+          "time": "09:45",
+          "value": 3.0014,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 23,
+          "time": "09:50",
+          "value": 3.0054,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        },
+        {
+          "sample": 24,
+          "time": "09:55",
+          "value": 3.0025,
+          "mean": 2.9989,
+          "ucl": 3.0326,
+          "lcl": 2.9652,
+          "isAnomaly": false
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "time": "08:10",
+      "source": "Material handling",
+      "message": "Operator loaded resin lot B-447 after lot A-312 ran out."
+    },
+    {
+      "time": "08:35",
+      "source": "Line operator",
+      "message": "Cooling bath valve adjusted to reduce visible pipe ovality."
+    },
+    {
+      "time": "09:05",
+      "source": "Quality check",
+      "message": "Diameter readings are still in spec, but trending high."
+    },
+    {
+      "time": "09:40",
+      "source": "Maintenance",
+      "message": "No puller speed alarms. Vacuum sizing pump sounds normal."
+    }
+  ],
+  "groundTruth": {
+    "anomalyType": "Western Electric trend / sustained upward drift",
+    "rootCause": "Cooling bath temperature increased after adjustment, causing pipe diameter growth.",
+    "teachingFocus": [
+      "Compare related sensors instead of judging one chart in isolation.",
+      "Notice the trend before points cross the control limit.",
+      "Use logs as evidence, not as a replacement for chart interpretation."
+    ]
+  }
+}

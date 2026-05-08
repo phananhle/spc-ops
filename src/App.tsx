@@ -13,10 +13,55 @@ import {
   YAxis,
 } from 'recharts'
 import './App.css'
-import { demoScenario } from './data/demoScenario'
-import type { SensorKey } from './data/types'
+import { activeScenario as demoScenario } from './data/scenarios'
+import type { SensorKey, SensorPoint } from './data/types'
 import { getMockTutorResponse } from './services/tutor'
 import type { ChatMessage } from './services/tutor'
+
+const formatSigFigs = (value: number) => {
+  if (!Number.isFinite(value)) return ''
+  return Number(value.toPrecision(4)).toString()
+}
+
+type SampleTimeTickProps = {
+  x?: number
+  y?: number
+  payload?: { value: number }
+  sampleToTime?: Map<number, string>
+}
+
+const SampleTimeTick = ({ x = 0, y = 0, payload, sampleToTime }: SampleTimeTickProps) => {
+  const sample = payload?.value
+  const time = sample !== undefined ? sampleToTime?.get(sample) ?? '' : ''
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={12} textAnchor="middle" fill="#475569" fontSize={11}>
+        {sample}
+      </text>
+      <text x={0} y={0} dy={26} textAnchor="middle" fill="#94a3b8" fontSize={10}>
+        {time}
+      </text>
+    </g>
+  )
+}
+
+type ChartTooltipProps = {
+  active?: boolean
+  payload?: Array<{ payload: SensorPoint }>
+}
+
+const ChartTooltip = ({ active, payload }: ChartTooltipProps) => {
+  if (!active || !payload?.length) return null
+  const point = payload[0].payload
+  return (
+    <div className="chart-tooltip">
+      <div className="chart-tooltip-header">
+        Sample {point.sample} · {point.time}
+      </div>
+      <div className="chart-tooltip-value">{formatSigFigs(point.value)}</div>
+    </div>
+  )
+}
 
 function App() {
   const [activeSensorKey, setActiveSensorKey] = useState<SensorKey>('diameter')
@@ -44,7 +89,29 @@ function App() {
     }
   }, [activeSensor])
 
-  if (!activeSensor) {
+  const chartLayout = useMemo(() => {
+    if (!activeSensor) return null
+    const points = activeSensor.points
+    const { ucl, mean, lcl } = points[0]
+    const values = points.map((p) => p.value)
+    const lo = Math.min(...values, lcl)
+    const hi = Math.max(...values, ucl)
+    const span = hi - lo || Math.abs(hi) || 1
+    const pad = span * 0.08
+    const sampleToTime = new Map<number, string>()
+    for (const p of points) sampleToTime.set(p.sample, p.time)
+    const tickInterval = Math.max(0, Math.ceil(points.length / 10) - 1)
+    return {
+      yDomain: [lo - pad, hi + pad] as [number, number],
+      ucl,
+      mean,
+      lcl,
+      sampleToTime,
+      tickInterval,
+    }
+  }, [activeSensor])
+
+  if (!activeSensor || !chartLayout) {
     return null
   }
 
@@ -119,17 +186,21 @@ function App() {
 
           <div className="chart-frame">
             <ResponsiveContainer height="100%" width="100%">
-              <LineChart data={activeSensor.points} margin={{ bottom: 12, left: 4, right: 18, top: 12 }}>
+              <LineChart data={activeSensor.points} margin={{ bottom: 24, left: 4, right: 18, top: 12 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="sample"
-                  label={{ value: 'Sample group', position: 'insideBottom', offset: -8 }}
+                  height={48}
+                  interval={chartLayout.tickInterval}
+                  tick={<SampleTimeTick sampleToTime={chartLayout.sampleToTime} />}
                 />
                 <YAxis
-                  domain={['dataMin - 0.1', 'dataMax + 0.1']}
+                  domain={chartLayout.yDomain}
                   label={{ value: activeSensor.unit, angle: -90, position: 'insideLeft' }}
+                  tickFormatter={formatSigFigs}
+                  width={56}
                 />
-                <Tooltip />
+                <Tooltip content={<ChartTooltip />} />
                 <Legend verticalAlign="top" />
                 {anomalyWindow ? (
                   <ReferenceArea
@@ -139,9 +210,9 @@ function App() {
                     x2={anomalyWindow.end}
                   />
                 ) : null}
-                <ReferenceLine y={activeSensor.points[0].ucl} label="UCL" stroke="#dc2626" />
-                <ReferenceLine y={activeSensor.points[0].mean} label="Mean" stroke="#64748b" strokeDasharray="5 5" />
-                <ReferenceLine y={activeSensor.points[0].lcl} label="LCL" stroke="#dc2626" />
+                <ReferenceLine y={chartLayout.ucl} label="UCL" stroke="#dc2626" />
+                <ReferenceLine y={chartLayout.mean} label="Mean" stroke="#64748b" strokeDasharray="5 5" />
+                <ReferenceLine y={chartLayout.lcl} label="LCL" stroke="#dc2626" />
                 <Line
                   activeDot={{ r: 7 }}
                   dataKey="value"

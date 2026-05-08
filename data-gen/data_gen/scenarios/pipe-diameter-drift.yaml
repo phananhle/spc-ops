@@ -1,0 +1,67 @@
+id: pipe-diameter-drift-demo
+title: Pipe extrusion diameter drift
+summary: >-
+  A pipe extrusion line has started producing parts near the upper diameter
+  limit after a resin lot change and cooling adjustment.
+line: Extrusion Line 2
+product: HDPE irrigation pipe, 40 mm nominal diameter
+seed: 20260507
+n_samples: 24
+start_time: "08:00"
+interval_minutes: 5
+
+objectives:
+  - Identify which sensor stream first shows abnormal behavior.
+  - Describe whether the pattern looks like common-cause variation, a shift, or a trend.
+  - Connect the chart evidence to a plausible manufacturing root cause.
+
+sensors:
+  - key: diameter
+    label: Outer Diameter
+    unit: mm
+    description: Pipe outer diameter measured after the cooling bath.
+    baseline: { mean: 40.00, sigma: 0.025 }
+    pattern: { type: trend, start: 17, slope: 0.035 }
+
+  - key: pressure
+    label: Melt Pressure
+    unit: bar
+    description: Extruder melt pressure before the die head.
+    baseline: { mean: 119.0, sigma: 0.7 }
+    pattern: { type: trend, start: 18, slope: 0.55 }
+
+  - key: temperature
+    label: Cooling Bath Temp
+    unit: C
+    description: Average cooling bath temperature near the sizing sleeve.
+    baseline: { mean: 20.1, sigma: 0.18 }
+    pattern: { type: trend, start: 16, slope: 0.18 }
+
+  - key: wallThickness
+    label: Wall Thickness
+    unit: mm
+    description: Ultrasonic wall thickness measurement after puller station.
+    baseline: { mean: 3.00, sigma: 0.012 }
+    pattern: { type: stable }
+
+logs:
+  - time: "08:10"
+    source: Material handling
+    message: Operator loaded resin lot B-447 after lot A-312 ran out.
+  - time: "08:35"
+    source: Line operator
+    message: Cooling bath valve adjusted to reduce visible pipe ovality.
+  - time: "09:05"
+    source: Quality check
+    message: Diameter readings are still in spec, but trending high.
+  - time: "09:40"
+    source: Maintenance
+    message: No puller speed alarms. Vacuum sizing pump sounds normal.
+
+groundTruth:
+  anomalyType: Western Electric trend / sustained upward drift
+  rootCause: Cooling bath temperature increased after adjustment, causing pipe diameter growth.
+  teachingFocus:
+    - Compare related sensors instead of judging one chart in isolation.
+    - Notice the trend before points cross the control limit.
+    - Use logs as evidence, not as a replacement for chart interpretation.

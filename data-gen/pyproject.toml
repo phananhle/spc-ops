@@ -1,0 +1,16 @@
+[project]
+name = "data-gen"
+version = "0.1.0"
+description = "Synthetic SPC scenario generator for SPC-Ops"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["data_gen*"]

@@ -1,0 +1,89 @@
+id: filament-screw-starvation
+title: PETG filament diameter drift from screw starvation
+summary: >-
+  A 1.75 mm PETG filament line shows diameter trending undersize over a shift,
+  with erratic melt pressure that started earlier. Operator must trace the
+  symptom back to its source.
+line: Filament Line A
+product: 1.75 mm PETG 3D printing filament
+seed: 20260507
+n_samples: 50
+start_time: "06:30"
+interval_minutes: 3
+
+objectives:
+  - Identify which sensor stream first signals abnormal behavior.
+  - Use the lead-lag relationship between sensors to reason about cause vs effect.
+  - Connect chart evidence to a likely upstream root cause hinted at in the manufacturing logs.
+
+sensors:
+  - key: pressure
+    label: Melt Pressure
+    unit: bar
+    description: Extruder melt pressure measured before the die.
+    baseline: { mean: 110.0, sigma: 1.2 }
+    pattern: { type: variance_increase, start: 20, multiplier: 4.0 }
+
+  - key: diameter
+    label: Filament Diameter
+    unit: mm
+    description: Laser-micrometer outer diameter measured downstream of cooling.
+    baseline: { mean: 1.75, sigma: 0.008 }
+    pattern: { type: trend, start: 25, slope: -0.0035 }
+
+  - key: temperature
+    label: Melt Temperature
+    unit: C
+    description: Melt thermocouple at zone 4, just before the die.
+    baseline: { mean: 250.0, sigma: 1.0 }
+    pattern: { type: trend, start: 27, slope: 0.10 }
+
+  - key: coolantTemp
+    label: Cooling Bath Temp
+    unit: C
+    description: Recirculating water bath after the die exit.
+    baseline: { mean: 25.0, sigma: 0.25 }
+    pattern: { type: stable }
+
+logs:
+  - time: "06:30"
+    source: Material handling
+    message: PETG lot R-118 loaded. Pellets clumped in bag corner.
+  - time: "06:45"
+    source: Maintenance
+    message: Hopper vibrator manual pulse. Cleared.
+  - time: "07:00"
+    source: Line operator
+    message: Diameter QA in spec. No action.
+  - time: "07:25"
+    source: Maintenance
+    message: Vibrator interlock fault. Unit running intermittent.
+  - time: "07:40"
+    source: Line operator
+    message: Pressure trace ragged. Within band.
+  - time: "07:55"
+    source: Quality
+    message: Spool 12 light. Reweigh end of shift.
+  - time: "08:10"
+    source: Material handling
+    message: Pellet surface gloss noted. Antiblock residue suspected.
+  - time: "08:25"
+    source: Line operator
+    message: Hopper tapped manually to dislodge.
+  - time: "08:40"
+    source: Maintenance
+    message: Throughput counter behind 3.5 percent.
+  - time: "08:55"
+    source: Quality
+    message: Diameter trending low. Within control limits.
+
+groundTruth:
+  anomalyType: Pressure variance increase leading diameter drift down
+  rootCause: >-
+    Contaminated, clumped pellets bridge in the hopper, starving the screw
+    intermittently. Reduced and erratic mass throughput causes melt pressure
+    swings, which propagate downstream as undersize filament diameter.
+  teachingFocus:
+    - Treat melt pressure as a leading indicator; diameter is a downstream consequence.
+    - Connect erratic feed evidence in logs (hopper bridging, vibrator faults, low spool weight) to the chart pattern.
+    - Do not chase the symptom; chase the source of feed continuity loss.

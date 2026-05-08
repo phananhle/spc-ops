@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Python data-gen
+data-gen/__pycache__/
+data-gen/**/__pycache__/
+data-gen/*.egg-info/
+data-gen/.venv/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
