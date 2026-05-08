@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   CartesianGrid,
   Line,
@@ -12,6 +12,25 @@ import {
 } from 'recharts'
 import type { Scenario, SensorKey, SensorPoint, SensorStream } from '../data/types'
 import './ChartPanel.css'
+
+const MORPH_DURATION_MS = 600
+
+const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+
+const interpolatePoints = (from: SensorPoint[], to: SensorPoint[], t: number): SensorPoint[] => {
+  return to.map((target, i) => {
+    const source = from[i] ?? target
+    return {
+      ...target,
+      value: lerp(source.value, target.value, t),
+      mean: lerp(source.mean, target.mean, t),
+      ucl: lerp(source.ucl, target.ucl, t),
+      lcl: lerp(source.lcl, target.lcl, t),
+    }
+  })
+}
 
 type Props = {
   scenario: Scenario
@@ -71,6 +90,42 @@ const ChartTooltip = ({ active, payload }: ChartTooltipProps) => {
 }
 
 export function ChartPanel({ scenario, activeSensor, activeSensorKey, onSensorChange }: Props) {
+  const [displayedPoints, setDisplayedPoints] = useState<SensorPoint[]>(activeSensor.points)
+  const previousPointsRef = useRef<SensorPoint[]>(activeSensor.points)
+  const isFirstRenderRef = useRef(true)
+
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false
+      previousPointsRef.current = activeSensor.points
+      setDisplayedPoints(activeSensor.points)
+      return
+    }
+
+    const fromPoints = previousPointsRef.current
+    const toPoints = activeSensor.points
+    const start = performance.now()
+    let rafId = 0
+
+    const tick = (now: number) => {
+      const elapsed = now - start
+      const t = Math.min(1, elapsed / MORPH_DURATION_MS)
+      const eased = easeInOutCubic(t)
+      setDisplayedPoints(interpolatePoints(fromPoints, toPoints, eased))
+      if (t < 1) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        previousPointsRef.current = toPoints
+      }
+    }
+
+    rafId = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(rafId)
+      previousPointsRef.current = toPoints
+    }
+  }, [activeSensor])
+
   const anomalyWindow = useMemo(() => {
     const anomalyPoints = activeSensor.points.filter((point) => point.isAnomaly)
     if (anomalyPoints.length === 0) {
@@ -83,7 +138,7 @@ export function ChartPanel({ scenario, activeSensor, activeSensorKey, onSensorCh
   }, [activeSensor])
 
   const chartLayout = useMemo(() => {
-    const points = activeSensor.points
+    const points = displayedPoints
     const { ucl, mean, lcl } = points[0]
     const values = points.map((p) => p.value)
     const lo = Math.min(...values, lcl)
@@ -102,7 +157,7 @@ export function ChartPanel({ scenario, activeSensor, activeSensorKey, onSensorCh
       sampleToTime,
       sampleTicks,
     }
-  }, [activeSensor])
+  }, [displayedPoints])
 
   return (
     <div className="chart-panel panel">
@@ -131,7 +186,7 @@ export function ChartPanel({ scenario, activeSensor, activeSensorKey, onSensorCh
 
       <div className="chart-frame">
         <ResponsiveContainer height="100%" width="100%" minHeight={200} debounce={50}>
-          <LineChart data={activeSensor.points} margin={{ bottom: 36, left: 12, right: 56, top: 12 }}>
+          <LineChart data={displayedPoints} margin={{ bottom: 36, left: 12, right: 56, top: 12 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="sample"
@@ -188,6 +243,7 @@ export function ChartPanel({ scenario, activeSensor, activeSensorKey, onSensorCh
               activeDot={{ r: 7 }}
               dataKey="value"
               dot={{ r: 3 }}
+              isAnimationActive={false}
               name={activeSensor.label}
               stroke="#2563eb"
               strokeWidth={3}
