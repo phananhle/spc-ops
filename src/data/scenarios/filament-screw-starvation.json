@@ -2,6 +2,7 @@
   "id": "filament-screw-starvation",
   "title": "PETG filament diameter drift from screw starvation",
   "summary": "A 1.75 mm PETG filament line shows diameter trending undersize over a shift, with erratic melt pressure that started earlier. Operator must trace the symptom back to its source.",
+  "problemStatement": "Filament diameter is drifting. Identify key sensors that can connect to upstream root causes using the manufacturing logs.",
   "line": "Filament Line A",
   "product": "1.75 mm PETG 3D printing filament",
   "objectives": [

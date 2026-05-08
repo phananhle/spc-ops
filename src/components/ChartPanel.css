@@ -1,0 +1,99 @@
+.chart-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.chart-panel .sensor-description {
+  font-size: 12px;
+  margin: 6px 0 10px;
+}
+
+.chart-panel .sensor-tabs {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 8px;
+}
+
+.chart-panel .sensor-tabs button {
+  background: var(--button-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-h);
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.chart-panel .sensor-tabs button.active {
+  background: var(--accent);
+  border-color: var(--accent-strong);
+  color: white;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.18);
+}
+
+.chart-panel .unit-pill {
+  background: var(--accent-bg);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 10px;
+}
+
+.chart-frame {
+  background: var(--chart-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  flex: 1 1 220px;
+  min-height: 220px;
+  padding: 8px 8px 2px;
+  position: relative;
+}
+
+.chart-tooltip {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+.chart-tooltip-header {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.chart-tooltip-value {
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.chart-callout {
+  background: var(--warning-bg);
+  border-radius: 12px;
+  color: var(--text-h);
+  font-size: 12px;
+  margin-top: 8px;
+  padding: 8px 10px;
+}
+
+@media (max-width: 1180px) {
+  .chart-frame {
+    flex: none;
+    height: 360px;
+  }
+}
+
+@media (max-width: 640px) {
+  .chart-panel .sensor-tabs {
+    grid-template-columns: 1fr;
+  }
+}

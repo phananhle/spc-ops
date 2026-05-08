@@ -39,6 +39,7 @@ export type Scenario = {
   id: string
   title: string
   summary: string
+  problemStatement: string
   line: string
   product: string
   objectives: string[]

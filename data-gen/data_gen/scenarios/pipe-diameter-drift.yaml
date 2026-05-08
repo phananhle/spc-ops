@@ -3,6 +3,9 @@ title: Pipe extrusion diameter drift
 summary: >-
   A pipe extrusion line has started producing parts near the upper diameter
   limit after a resin lot change and cooling adjustment.
+problemStatement: >-
+  Pipe diameter is drifting. Identify key sensors that can connect to
+  upstream root causes using the manufacturing logs.
 line: Extrusion Line 2
 product: HDPE irrigation pipe, 40 mm nominal diameter
 seed: 20260507

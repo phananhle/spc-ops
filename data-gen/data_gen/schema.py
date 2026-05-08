@@ -17,6 +17,7 @@ REQUIRED_SCENARIO_KEYS = {
     "id",
     "title",
     "summary",
+    "problemStatement",
     "line",
     "product",
     "objectives",

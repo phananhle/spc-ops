@@ -102,6 +102,7 @@ def build_scenario(yaml_path: Path) -> dict[str, Any]:
         "id": cfg["id"],
         "title": cfg["title"],
         "summary": cfg["summary"],
+        "problemStatement": cfg["problemStatement"],
         "line": cfg["line"],
         "product": cfg["product"],
         "objectives": list(cfg["objectives"]),
