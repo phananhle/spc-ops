@@ -1,16 +1,35 @@
+import { useEffect, useState } from 'react'
 import './ObjectivesPanel.css'
 
 type Props = {
+  scenarioId: string
   problemStatement: string
   objectives: string[]
   completed: Set<number>
   onToggle: (index: number) => void
 }
 
-export function ObjectivesPanel({ problemStatement, objectives, completed, onToggle }: Props) {
+const NOTES_KEY_PREFIX = 'spc-ops:notes:'
+
+export function ObjectivesPanel({
+  scenarioId,
+  problemStatement,
+  objectives,
+  completed,
+  onToggle,
+}: Props) {
   const completedCount = completed.size
   const total = objectives.length
   const pct = total === 0 ? 0 : Math.round((completedCount / total) * 100)
+
+  const [notes, setNotes] = useState<string>(() => {
+    if (typeof window === 'undefined') return ''
+    return window.localStorage.getItem(`${NOTES_KEY_PREFIX}${scenarioId}`) ?? ''
+  })
+
+  useEffect(() => {
+    window.localStorage.setItem(`${NOTES_KEY_PREFIX}${scenarioId}`, notes)
+  }, [scenarioId, notes])
 
   return (
     <section className="objectives-panel panel">
@@ -48,6 +67,19 @@ export function ObjectivesPanel({ problemStatement, objectives, completed, onTog
           )
         })}
       </ul>
+
+      <div className="notes-block">
+        <label className="eyebrow notes-label" htmlFor="learner-notes">My notes</label>
+        <textarea
+          id="learner-notes"
+          className="notes-textarea"
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          placeholder="Jot observations, hypotheses, evidence as you reason..."
+          rows={4}
+          spellCheck
+        />
+      </div>
     </section>
   )
 }

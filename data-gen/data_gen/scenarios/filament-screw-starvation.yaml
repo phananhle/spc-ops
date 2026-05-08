@@ -54,13 +54,13 @@ logs:
     message: PETG lot R-118 loaded. Pellets clumped in bag corner.
   - time: "06:45"
     source: Maintenance
-    message: Hopper vibrator manual pulse. Cleared.
+    message: Hopper agitator manual pulse. Cleared.
   - time: "07:00"
     source: Line operator
     message: Diameter QA in spec. No action.
   - time: "07:25"
     source: Maintenance
-    message: Vibrator interlock fault. Unit running intermittent.
+    message: Agitator interlock fault. Unit running intermittent.
   - time: "07:40"
     source: Line operator
     message: Pressure trace ragged. Within band.
@@ -88,5 +88,5 @@ groundTruth:
     swings, which propagate downstream as undersize filament diameter.
   teachingFocus:
     - Treat melt pressure as a leading indicator; diameter is a downstream consequence.
-    - Connect erratic feed evidence in logs (hopper bridging, vibrator faults, low spool weight) to the chart pattern.
+    - Connect erratic feed evidence in logs (hopper bridging, agitator faults, low spool weight) to the chart pattern.
     - Do not chase the symptom; chase the source of feed continuity loss.

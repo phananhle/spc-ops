@@ -68,3 +68,96 @@ groundTruth:
     - Compare related sensors instead of judging one chart in isolation.
     - Notice the trend before points cross the control limit.
     - Use logs as evidence, not as a replacement for chart interpretation.
+
+# Resource bank for the Socratic tutor. Each rung has three disclosure levels;
+# the tutor selects what fits the learner's current stage and prior moves
+# (it does NOT march through them in order). See src/services/socraticPrompt.ts.
+tutorPlan:
+  - concept: Compare related sensors before judging one chart in isolation
+    nudge: >-
+      You are looking at diameter. Are any of the other sensor charts also
+      showing unusual behavior in the same time window?
+    hint: >-
+      Look at the cooling bath temperature chart around the same samples where
+      diameter starts trending up. What do you notice about which one moves first?
+    reveal: >-
+      Cooling bath temperature drifts up starting around sample 16; diameter
+      only starts at sample 17. The earliest abnormal signal is upstream of
+      the QA metric.
+
+  - concept: Notice a trend before points cross the control limit
+    nudge: >-
+      Are the diameter readings still inside the control limits? What does the
+      direction of the recent points tell you on its own?
+    hint: >-
+      Western Electric run rules let you flag a process change before any
+      single point breaks UCL. Which rule fits a sustained one-direction drift?
+    reveal: >-
+      A run of consecutive points trending in one direction (Western Electric
+      trend rule) indicates a sustained shift even when each point is
+      technically still in spec.
+
+  - concept: Use the operator log as evidence, not a replacement for the chart
+    nudge: >-
+      Anything in the operator logs around the time the drift starts that
+      might be relevant?
+    hint: >-
+      Two operator actions are logged before sample 17. Which timestamp lines
+      up with the cooling bath chart starting to move?
+    reveal: >-
+      The 08:35 cooling bath valve adjustment lines up with the bath
+      temperature drift starting at sample 16 — the log corroborates what the
+      chart is showing.
+
+# Curated catalog of common SPC misdiagnoses for this scenario. When the
+# learner's response contains a triggerCue, the tutor targets the
+# correctiveHint instead of inventing an ad-hoc reply.
+misconceptions:
+  - id: blame-resin-lot
+    label: Blames the resin lot change automatically because it is the most dramatic log entry
+    triggerCues:
+      - resin
+      - lot
+      - b-447
+      - a-312
+      - material change
+      - material lot
+    correctiveHint: >-
+      The resin lot changed at 08:10. If that were the cause, what would you
+      expect to see in melt pressure starting near sample 10? Compare what is
+      actually in the data with what your hypothesis predicts.
+
+  - id: blame-equipment
+    label: Blames mechanical equipment despite logs explicitly noting normal operation
+    triggerCues:
+      - puller
+      - vacuum
+      - sizing pump
+      - die head
+      - pump
+      - extruder broken
+    correctiveHint: >-
+      The 09:40 maintenance log notes the puller and vacuum sizing pump as
+      normal. If you suspect equipment, what additional evidence would
+      override that operator observation?
+
+  - id: treats-stable-as-anomaly
+    label: Treats a stable distractor sensor (wall thickness) as if it were anomalous
+    triggerCues:
+      - wall thickness
+    correctiveHint: >-
+      Look at the wall thickness data — are any points outside control limits
+      or trending? What does its stability tell you about which sensors are
+      actually showing the anomaly?
+
+  - id: jumps-to-mean-shift
+    label: Calls the pattern a sudden mean shift without examining the run length
+    triggerCues:
+      - mean shift
+      - sudden shift
+      - step change
+      - jump
+    correctiveHint: >-
+      Look at the diameter points one by one starting around sample 16. Is
+      this a sudden jump from one mean to another, or a steady drift across
+      many samples? What rule would you cite?

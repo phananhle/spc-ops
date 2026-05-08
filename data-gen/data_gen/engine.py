@@ -98,7 +98,7 @@ def build_scenario(yaml_path: Path) -> dict[str, Any]:
     times = _sample_times(start_time, interval_minutes, n_samples)
     sensors = [_build_sensor(s, n_samples, times, rng) for s in cfg["sensors"]]
 
-    return {
+    result: dict[str, Any] = {
         "id": cfg["id"],
         "title": cfg["title"],
         "summary": cfg["summary"],
@@ -121,3 +121,27 @@ def build_scenario(yaml_path: Path) -> dict[str, Any]:
             "teachingFocus": list(cfg["groundTruth"]["teachingFocus"]),
         },
     }
+
+    # Optional Socratic-tutor authoring fields. Pass through verbatim if present.
+    if "tutorPlan" in cfg:
+        result["tutorPlan"] = [
+            {
+                "concept": rung["concept"],
+                "nudge": rung["nudge"],
+                "hint": rung["hint"],
+                "reveal": rung["reveal"],
+            }
+            for rung in cfg["tutorPlan"]
+        ]
+    if "misconceptions" in cfg:
+        result["misconceptions"] = [
+            {
+                "id": m["id"],
+                "label": m["label"],
+                "triggerCues": list(m["triggerCues"]),
+                "correctiveHint": m["correctiveHint"],
+            }
+            for m in cfg["misconceptions"]
+        ]
+
+    return result

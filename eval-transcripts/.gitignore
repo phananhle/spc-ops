@@ -1,0 +1,5 @@
+# Transcripts may contain learner-identifying content; keep them out of git.
+*.md
+!README.md
+*.json
+*.jsonl

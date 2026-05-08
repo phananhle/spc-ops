@@ -31,6 +31,9 @@ REQUIRED_POINT_KEYS = {"sample", "time", "value", "mean", "ucl", "lcl"}
 REQUIRED_LOG_KEYS = {"time", "source", "message"}
 REQUIRED_GROUND_TRUTH_KEYS = {"anomalyType", "rootCause", "teachingFocus"}
 
+REQUIRED_TUTOR_RUNG_KEYS = {"concept", "nudge", "hint", "reveal"}
+REQUIRED_MISCONCEPTION_KEYS = {"id", "label", "triggerCues", "correctiveHint"}
+
 
 class SchemaError(ValueError):
     pass
@@ -84,3 +87,22 @@ def validate_scenario(d: dict[str, Any]) -> None:
         _require_keys(log, REQUIRED_LOG_KEYS, f"log[{idx}]")
 
     _require_keys(d["groundTruth"], REQUIRED_GROUND_TRUTH_KEYS, "groundTruth")
+
+    if "tutorPlan" in d:
+        if not isinstance(d["tutorPlan"], list):
+            raise SchemaError("tutorPlan must be a list")
+        for idx, rung in enumerate(d["tutorPlan"]):
+            _require_keys(rung, REQUIRED_TUTOR_RUNG_KEYS, f"tutorPlan[{idx}]")
+
+    if "misconceptions" in d:
+        if not isinstance(d["misconceptions"], list):
+            raise SchemaError("misconceptions must be a list")
+        seen_ids: set[str] = set()
+        for idx, m in enumerate(d["misconceptions"]):
+            where = f"misconceptions[{idx}]"
+            _require_keys(m, REQUIRED_MISCONCEPTION_KEYS, where)
+            if not isinstance(m["triggerCues"], list) or not m["triggerCues"]:
+                raise SchemaError(f"{where}.triggerCues must be a non-empty list")
+            if m["id"] in seen_ids:
+                raise SchemaError(f"{where}.id '{m['id']}' appears more than once")
+            seen_ids.add(m["id"])

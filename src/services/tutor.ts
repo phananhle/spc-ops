@@ -1,61 +1,136 @@
-import type { Scenario, SensorKey, SensorStream } from '../data/types'
+import Anthropic from '@anthropic-ai/sdk'
+import type { Scenario, SensorKey } from '../data/types'
+import { buildSystemPrompt, type TutorMode } from './socraticPrompt'
 
 export type ChatMessage = {
   id: number
   role: 'learner' | 'tutor'
   text: string
+  mode?: TutorMode
 }
 
-const genericResponseBank = [
-  'Good observation. Before naming a cause, which chart feature tells you this is more than normal random noise?',
-  'Look at the timing across sensors. Which stream starts moving first, and which manufacturing log happened near that change?',
-  'How would you separate a material issue from a process issue using only the evidence shown here?',
-  'Which sensor is the symptom, and which is closer to the source?',
-]
+export type TutorResponse = {
+  tutorMessage: string
+  scratchpad: string
+  objectivesMet: number[]
+  mode: TutorMode
+}
 
-function findMentionedSensor(
-  message: string,
-  sensors: SensorStream[],
-): SensorStream | undefined {
-  const lower = message.toLowerCase()
-  return sensors.find((sensor) => {
-    if (lower.includes(sensor.key.toLowerCase())) {
-      return true
+const MODEL_ID = 'claude-haiku-4-5-20251001'
+const MAX_TOKENS = 1024
+
+const SCRATCHPAD_PATTERN = /<scratchpad>([\s\S]*?)<\/scratchpad>/i
+const OBJECTIVES_PATTERN = /<objectives_met>\s*(\[[^\]]*\])\s*<\/objectives_met>/i
+
+const parseObjectives = (raw: string): number[] => {
+  const match = raw.match(OBJECTIVES_PATTERN)
+  if (!match) return []
+  try {
+    const parsed = JSON.parse(match[1])
+    if (!Array.isArray(parsed)) return []
+    return parsed.filter(
+      (n): n is number => typeof n === 'number' && Number.isInteger(n) && n >= 0,
+    )
+  } catch {
+    return []
+  }
+}
+
+const splitTutorResponse = (
+  raw: string,
+): { scratchpad: string; objectivesMet: number[]; userFacing: string } => {
+  const scratchMatch = raw.match(SCRATCHPAD_PATTERN)
+  const scratchpad = scratchMatch ? scratchMatch[1].trim() : ''
+  const objectivesMet = parseObjectives(raw)
+  const userFacing = raw
+    .replace(SCRATCHPAD_PATTERN, '')
+    .replace(OBJECTIVES_PATTERN, '')
+    .trim()
+  return { scratchpad, objectivesMet, userFacing }
+}
+
+const toAnthropicMessages = (
+  history: ChatMessage[],
+  newLearnerMessage: string,
+): Array<{ role: 'user' | 'assistant'; content: string }> => {
+  const mapped = history.map((m) => ({
+    role: m.role === 'learner' ? ('user' as const) : ('assistant' as const),
+    content: m.text,
+  }))
+
+  while (mapped.length > 0 && mapped[0].role === 'assistant') {
+    mapped.shift()
+  }
+
+  const collapsed: Array<{ role: 'user' | 'assistant'; content: string }> = []
+  for (const turn of mapped) {
+    const last = collapsed[collapsed.length - 1]
+    if (last && last.role === turn.role) {
+      last.content = `${last.content}\n\n${turn.content}`
+    } else {
+      collapsed.push(turn)
     }
-    return sensor.label
-      .toLowerCase()
-      .split(/\s+/)
-      .some((word) => word.length > 3 && lower.includes(word))
-  })
+  }
+
+  const last = collapsed[collapsed.length - 1]
+  if (last && last.role === 'user') {
+    last.content = `${last.content}\n\n${newLearnerMessage}`
+  } else {
+    collapsed.push({ role: 'user', content: newLearnerMessage })
+  }
+
+  return collapsed
 }
 
-export function getMockTutorResponse(
+const getApiKey = (): string => {
+  const key = import.meta.env.VITE_ANTHROPIC_API_KEY
+  if (!key) {
+    throw new Error(
+      'VITE_ANTHROPIC_API_KEY is not set. Copy .env.example to .env.local and fill in your Anthropic API key.',
+    )
+  }
+  return key
+}
+
+export async function getTutorResponse(
   message: string,
   scenario: Scenario,
-  activeSensor: SensorKey,
-  previousMessages: ChatMessage[],
-) {
-  const lower = message.toLowerCase()
+  activeSensorKey: SensorKey,
+  history: ChatMessage[],
+  mode: TutorMode,
+): Promise<TutorResponse> {
+  const client = new Anthropic({
+    apiKey: getApiKey(),
+    dangerouslyAllowBrowser: true,
+  })
 
-  if (lower.includes('answer') || lower.includes('summary')) {
-    return `A concise expert summary would mention ${scenario.groundTruth.anomalyType.toLowerCase()} and connect it to ${scenario.groundTruth.rootCause.toLowerCase()} What evidence would you cite first?`
+  const systemPrompt = buildSystemPrompt(scenario, activeSensorKey, mode)
+  const messages = toAnthropicMessages(history, message)
+
+  const response = await client.messages.create({
+    model: MODEL_ID,
+    max_tokens: MAX_TOKENS,
+    // Omit `system` entirely in default mode so the LLM gets no scaffolding at all.
+    ...(systemPrompt.length > 0 ? { system: systemPrompt } : {}),
+    messages,
+  })
+
+  const rawText = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === 'text')
+    .map((block) => block.text)
+    .join('\n')
+    .trim()
+
+  if (mode === 'direct' || mode === 'default') {
+    // Neither Direct nor Default mode emits a scratchpad or objectives tag.
+    return { tutorMessage: rawText, scratchpad: '', objectivesMet: [], mode }
   }
 
-  const mentioned = findMentionedSensor(message, scenario.sensors)
-  if (mentioned) {
-    if (mentioned.key === activeSensor) {
-      return `On the ${mentioned.label} chart, focus on the sequence before any limit is crossed. What does the pattern tell you — is this stream leading the others or lagging behind them?`
-    }
-    const activeLabel =
-      scenario.sensors.find((sensor) => sensor.key === activeSensor)?.label ??
-      'the current chart'
-    return `${mentioned.label} is worth a closer look. Switch to that tab and compare its timing against ${activeLabel}. Which one moves first?`
+  const { scratchpad, objectivesMet, userFacing } = splitTutorResponse(rawText)
+  return {
+    tutorMessage: userFacing.length > 0 ? userFacing : rawText,
+    scratchpad,
+    objectivesMet,
+    mode,
   }
-
-  const teachingPrompts = scenario.groundTruth.teachingFocus.map(
-    (focus) =>
-      `Consider this lens: ${focus.toLowerCase().replace(/\.$/, '')}. What does that suggest you check next?`,
-  )
-  const pool = [...teachingPrompts, ...genericResponseBank]
-  return pool[previousMessages.length % pool.length]
 }

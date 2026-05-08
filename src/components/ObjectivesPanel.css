@@ -124,3 +124,37 @@
   font-size: 12px;
   line-height: 1.35;
 }
+
+.notes-block {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.notes-label {
+  margin: 0;
+}
+
+.notes-textarea {
+  background: var(--soft-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-h);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.notes-textarea:focus {
+  border-color: var(--accent-strong);
+  outline: none;
+}
+
+.notes-textarea::placeholder {
+  color: var(--muted);
+}

@@ -35,6 +35,20 @@ export type GroundTruth = {
   teachingFocus: string[]
 }
 
+export type TutorRung = {
+  concept: string
+  nudge: string
+  hint: string
+  reveal: string
+}
+
+export type SpcMisconception = {
+  id: string
+  label: string
+  triggerCues: string[]
+  correctiveHint: string
+}
+
 export type Scenario = {
   id: string
   title: string
@@ -46,4 +60,6 @@ export type Scenario = {
   sensors: SensorStream[]
   logs: ManufacturingLog[]
   groundTruth: GroundTruth
+  tutorPlan?: TutorRung[]
+  misconceptions?: SpcMisconception[]
 }
