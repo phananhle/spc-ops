@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import type { FormEvent } from 'react'
 import Markdown from 'markdown-to-jsx'
 import type { ChatMessage } from '../services/tutor'
@@ -25,6 +26,14 @@ export function TutorPanel({
   isThinking,
   onCopyTranscript,
 }: Props) {
+  const historyRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const node = historyRef.current
+    if (!node) return
+    node.scrollTop = node.scrollHeight
+  }, [messages, isThinking])
+
   return (
     <aside className="tutor-panel panel">
       <div className="tutor-hero">
@@ -65,7 +74,7 @@ export function TutorPanel({
           </div>
         </div>
       </div>
-      <div className="chat-history" aria-live="polite">
+      <div className="chat-history" aria-live="polite" ref={historyRef}>
         {messages.map((message) => (
           <div className={`chat-message ${message.role}`} key={message.id}>
             <span>
